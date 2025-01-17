@@ -1,3 +1,4 @@
+import com.github.javafaker.Faker;
 import ru.praktikum.scooter.pojo.CreateCourier;
 import ru.praktikum.scooter.pojo.LoginCourier;
 import ru.praktikum.scooter.steps.CourierSteps;
@@ -5,22 +6,16 @@ import ru.praktikum.scooter.steps.CourierSteps;
 import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class CourierCreationTest extends CourierSteps {
-    String login = "Body";
-    String password = "1234";
-    String firstName = "Alex";
-    @Before
-    @Step("Предусловие: URL сервиса 'https://qa-scooter.praktikum-services.ru/'")
-    public  void setUp() {
-        RestAssured.baseURI = "https://qa-scooter.praktikum-services.ru/";
-    }
+    Faker faker = new Faker();
+    String login = faker.name().username();
+    String password = faker.internet().password();
+    String firstName = faker.name().firstName();
     @After
     @Step("Постусловие: очистка данных - удаление созданного курьера")
     public  void cleanData() {

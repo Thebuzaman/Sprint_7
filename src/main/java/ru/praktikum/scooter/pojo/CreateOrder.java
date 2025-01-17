@@ -6,15 +6,15 @@ public class CreateOrder {
     private String firstName;
     private String lastName;
     private String address;
-    private int metroStation;
+    private Integer metroStation;
     private String phone;
-    private int rentTime;
+    private Integer rentTime;
     private String deliveryDate;
     private String comment;
     private List<String> colour;
 
-    public CreateOrder (String firstName, String lastName, String address, int metroStation,
-                        String phone, int rentTime, String deliveryDate, String comment, List<String> colour) {
+    public CreateOrder (String firstName, String lastName, String address, Integer metroStation,
+                        String phone, Integer rentTime, String deliveryDate, String comment, List<String> colour) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;

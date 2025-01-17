@@ -1,54 +1,57 @@
 package ru.praktikum.scooter.steps;
+import io.restassured.specification.RequestSpecification;
+import ru.praktikum.scooter.BaseHttpClient;
+import ru.praktikum.scooter.constants.URL;
 import ru.praktikum.scooter.pojo.CreateOrder;
 
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
+import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class OrderSteps {
+public class OrderSteps extends BaseHttpClient {
     @Step("Отправка запроса POST на /api/v1/orders для создания заказа")
     public Response sendPostRequestForCreatingOrder(CreateOrder order) {
-        return given()
-                .header("Content-type", "application/json")
+        return requestSpecification
                 .and()
                 .body(order)
                 .when()
-                .post("/api/v1/orders");
+                .post(URL.ORDER_CREATE_POST);
     }
 
     @Step("Статус ответа: 201, поле 'track' со значением")
     public String checkStatus201ForCreatingOrder(Response response) {
-        response.then().assertThat()
-                .body("track",notNullValue())
-                .and()
-                .statusCode(201);
+        response.then()
+                .statusCode(SC_CREATED)
+                .assertThat()
+                .body("track",notNullValue());
         return response.then().extract().body().path("track").toString();
 
     }
 
     @Step("Заказ отменен")
     public void cancelOrder(String track) {
-        given()
+        requestSpecification
                 .queryParam("track", track)
-                .put("/api/v1/orders/cancel")
-                .then().statusCode(200);
+                .put(URL.ORDER_CANCEL_PUT)
+                .then().statusCode(SC_OK);
     }
 
     @Step("Отправка запроса GET на /api/v1/orders для получения списков заказов")
     public Response sendGetRequestForCreatingOrder() {
-        return given()
-                .get("/v1/orders");
+        return requestSpecification
+                .get(URL.ORDER_LIST_GET);
 
     }
 
     @Step("Статус ответа: 200, ответ содержит заказ")
     public void checkStatus200AndBody(Response response) {
         response.then()
+                .statusCode(SC_OK)
                 .assertThat()
-                .body("orders.id", notNullValue())
-                .and()
-                .statusCode(200);
+                .body("orders.id", notNullValue());
     }
 }
